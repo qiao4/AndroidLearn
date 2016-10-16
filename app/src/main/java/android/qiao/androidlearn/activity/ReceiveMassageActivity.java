@@ -5,12 +5,15 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class ReceiveMassageActivity extends AppCompatActivity {
     private int REC_PORT = 8091;
 
     Thread receiveT;
+    Thread receiveUDP;
 
     Handler handler = new Handler() {
         @Override
@@ -72,8 +76,25 @@ public class ReceiveMassageActivity extends AppCompatActivity {
         adapter = new MsgAdapter(ReceiveMassageActivity.this, R.layout.msg_item, list);
         msgList.setAdapter(adapter);
 
-        receiveT = new Thread(new ReceiveThread());
-        receiveT.start();
+        anotherIp = (EditText) findViewById(R.id.ip_aite);
+        mySend = (Button)findViewById(R.id.button_send);
+        mySend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(){
+                    @Override
+                    public void run() {
+                        SocketCommu.SendMessageByUDP(anotherIp.getText().toString(), myMsg.getText().toString());
+                    }
+                }.start();
+
+            }
+        });
+
+//        receiveT = new Thread(new ReceiveThread());
+//        receiveT.start();
+        receiveUDP = new Thread(new UDPReceiveThread());
+        receiveUDP.start();
     }
 
     @Override
@@ -89,6 +110,7 @@ public class ReceiveMassageActivity extends AppCompatActivity {
         }
     }
 
+    //receive mesage by tcp socket
     class ReceiveThread implements Runnable {           //监听8091端口
 
         @Override
@@ -139,6 +161,43 @@ public class ReceiveMassageActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 //Log.d("sockettest", e.getMessage());
+            }
+        }
+    }
+
+    //receive message by udp socket
+    class UDPReceiveThread implements Runnable {           //监听8091端口
+
+        @Override
+        public void run() {
+            DatagramSocket serverS = null;
+            DatagramPacket message = null;
+
+            try {
+                message = new DatagramPacket(new byte[256], 256);
+                serverS = new DatagramSocket(REC_PORT);
+                Log.d("TAG", "run: start listening");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            while (!Thread.currentThread().isInterrupted()) {
+
+                if(serverS == null) break;
+                try {
+                    serverS .receive(message);
+                    Log.d("TAG", "run: receive message form " + message.getAddress().getHostName()
+                            + " : " + message.getAddress().getHostAddress());
+                    byte[] data = new byte[message.getData()[0]];
+                    System.arraycopy(message.getData(), 1, data, 0, data.length);
+
+                    Msg newMsg = new Msg(new String(data, "utf-8"), Msg.RECEIVE_SIGN);
+                    Message m = new Message();
+                    m.obj = newMsg;
+                    m.what = 1;
+                    handler.sendMessage(m);
+                } catch (Exception e) {
+                    e.getMessage();
+                }
             }
         }
     }
