@@ -2,13 +2,15 @@ package android.qiao.androidlearn.activity;
 
 import android.content.Intent;
 import android.qiao.androidlearn.R;
+import android.qiao.androidlearn.service.MyTestService;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button button_receive_message;
+    Button button_my_test_service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,5 +25,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        button_my_test_service = (Button) findViewById(R.id.button_my_test_servive);
+        button_my_test_service.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button_my_test_servive:
+                Intent intent=new Intent(getApplicationContext(), MyTestServiceActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
     }
 }

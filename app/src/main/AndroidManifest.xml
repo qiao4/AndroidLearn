@@ -17,7 +17,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ReceiveMassageActivity"></activity>
+        <activity android:name=".activity.ReceiveMassageActivity" />
+
+        <service
+            android:name=".service.MyTestService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".activity.MyTestServiceActivity"></activity>
     </application>
 
 </manifest>
