@@ -2,17 +2,22 @@ package android.qiao.androidlearn.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
 public class MyTestService extends Service {
+
+    private int count = 0;
+    private MyTestBinder binder = new MyTestBinder();
+
     public MyTestService() {
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        Log.w("TAG", "service run: onbind");
+        return binder;
     }
 
     @Override
@@ -31,5 +36,15 @@ public class MyTestService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.w("TAG", "service run: destory service");
+    }
+
+    public class MyTestBinder extends Binder {
+
+        public void addCount() {
+            count++;
+        }
+        public int getCount() {
+            return count;
+        }
     }
 }

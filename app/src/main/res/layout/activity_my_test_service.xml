@@ -14,18 +14,53 @@
         android:text="Start Service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/button_start_service"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="52dp"
-        android:id="@+id/button_start_service" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:text="stop service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="81dp"
         android:id="@+id/button_stop_service"
         android:layout_below="@+id/button_start_service"
         android:layout_alignEnd="@+id/button_start_service" />
+
+    <Button
+        android:text="bind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_stop_service"
+        android:layout_alignEnd="@+id/button_stop_service"
+        android:layout_marginEnd="11dp"
+        android:layout_marginTop="14dp"
+        android:id="@+id/button_bind" />
+
+    <Button
+        android:text="unbind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_bind"
+        android:layout_alignStart="@+id/button_bind"
+        android:layout_marginTop="27dp"
+        android:id="@+id/button_unbind" />
+
+    <Button
+        android:text="count++"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button_stop_service"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="63dp"
+        android:layout_marginBottom="22dp"
+        android:id="@+id/button_add" />
+
+    <Button
+        android:text="show count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/button_bind"
+        android:layout_alignStart="@+id/button_add"
+        android:layout_marginTop="18dp"
+        android:id="@+id/button_show_count" />
 </RelativeLayout>
