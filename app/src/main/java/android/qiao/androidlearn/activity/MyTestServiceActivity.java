@@ -27,7 +27,7 @@ public class MyTestServiceActivity extends AppCompatActivity implements View.OnC
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            binder = (MyTestService.MyTestBinder)service;
+            binder = (MyTestService.MyTestBinder) service;
         }
 
         @Override
@@ -59,31 +59,32 @@ public class MyTestServiceActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_start_service :
+        switch(v.getId()) {
+            case R.id.button_start_service:
                 Intent my_test_start = new Intent(this, MyTestService.class);
                 startService(my_test_start);
                 break;
-            case R.id.button_stop_service :
+            case R.id.button_stop_service:
                 Intent my_test_stop = new Intent(this, MyTestService.class);
                 stopService(my_test_stop);
                 break;
-            case R.id.button_bind :
+            case R.id.button_bind:
                 Intent my_test_start_bind = new Intent(this, MyTestService.class);
                 bindService(my_test_start_bind, connection, BIND_AUTO_CREATE);
+
                 break;
-            case R.id.button_unbind :
-                Intent my_test_stop_bind = new Intent(this, MyTestService.class);
+            case R.id.button_unbind:
                 unbindService(connection);
+                binder = null;
                 break;
-            case R.id.button_add :
+            case R.id.button_add:
                 if(binder == null) {
                     Toast.makeText(this, "service not bind", Toast.LENGTH_SHORT).show();
                 } else {
                     binder.addCount();
                 }
                 break;
-            case R.id.button_show_count :
+            case R.id.button_show_count:
                 if(binder == null) {
                     Toast.makeText(this, "service not bind", Toast.LENGTH_SHORT).show();
                 } else {

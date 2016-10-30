@@ -27,5 +27,13 @@
         android:layout_toEndOf="@+id/button_receive_message"
         android:layout_marginStart="30dp" />
 
+    <Button
+        android:text="async task test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_my_test_servive"
+        android:layout_alignStart="@+id/button_my_test_servive"
+        android:id="@+id/button_asynctask"/>
+
 
 </RelativeLayout>

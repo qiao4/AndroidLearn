@@ -11,6 +11,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button button_receive_message;
     Button button_my_test_service;
+    Button button_async_task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         button_my_test_service = (Button) findViewById(R.id.button_my_test_servive);
         button_my_test_service.setOnClickListener(this);
+
+        button_async_task = (Button) findViewById(R.id.button_asynctask);
+        button_async_task.setOnClickListener(this);
     }
 
     @Override
@@ -35,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.button_my_test_servive:
                 Intent intent=new Intent(getApplicationContext(), MyTestServiceActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.button_asynctask:
+                new android.qiao.androidlearn.utils.MyTestAsyncTask(this).execute(0);
                 break;
             default:
                 break;

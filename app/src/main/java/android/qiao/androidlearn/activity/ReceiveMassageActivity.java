@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -75,6 +76,14 @@ public class ReceiveMassageActivity extends AppCompatActivity {
         msgList = (ListView) findViewById(R.id.list_view_msg);
         adapter = new MsgAdapter(ReceiveMassageActivity.this, R.layout.msg_item, list);
         msgList.setAdapter(adapter);
+        //set item click listener
+        msgList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Msg temp = list.get(position);
+                myMsg.setText(temp.getMsg());
+            }
+        });
 
         anotherIp = (EditText) findViewById(R.id.ip_aite);
         mySend = (Button)findViewById(R.id.button_send);
