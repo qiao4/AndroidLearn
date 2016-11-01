@@ -1,5 +1,9 @@
 package android.qiao.androidlearn.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -82,6 +86,18 @@ public class ReceiveMassageActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Msg temp = list.get(position);
                 myMsg.setText(temp.getMsg());
+            }
+        });
+        msgList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Msg temp = list.get(position);
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ContentResolver cr = getContentResolver();
+                ClipData clipData = ClipData.newPlainText("new", temp.getMsg());
+                clipboard.setPrimaryClip(clipData);
+                Toast.makeText(getApplicationContext(), "message has been copied to clipboard", Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
 
