@@ -23,6 +23,7 @@ public class MyTestService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
         Log.w("TAG", "service run: start service");
     }
 
@@ -43,6 +44,7 @@ public class MyTestService extends Service {
         public void addCount() {
             count++;
         }
+
         public int getCount() {
             return count;
         }

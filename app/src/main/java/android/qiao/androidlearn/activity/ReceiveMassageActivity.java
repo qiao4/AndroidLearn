@@ -1,9 +1,11 @@
 package android.qiao.androidlearn.activity;
 
+import android.app.NotificationManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +43,7 @@ public class ReceiveMassageActivity extends AppCompatActivity {
     MsgAdapter adapter;
     private ServerSocket serverS;
     private int REC_PORT = 8091;
+    int notifyId;
 
     Thread receiveT;
     Thread receiveUDP;
@@ -71,6 +74,14 @@ public class ReceiveMassageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive_massage);
+
+        Intent intentFromOther = getIntent();
+        String test = getIntent().getStringExtra("test");
+
+        if( (notifyId = intentFromOther.getIntExtra("notifyId", -1)) != -1) {
+            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            nm.cancel(notifyId);
+        }
 
         myMsg = (EditText) findViewById(R.id.edit_text_msg);
 

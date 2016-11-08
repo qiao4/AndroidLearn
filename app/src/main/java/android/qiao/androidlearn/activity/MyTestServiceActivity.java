@@ -1,5 +1,8 @@
 package android.qiao.androidlearn.activity;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +25,7 @@ public class MyTestServiceActivity extends AppCompatActivity implements View.OnC
     Button button_unbind;
     Button button_count;
     Button button_show_count;
+    Button button_call_notify;
 
     private MyTestService.MyTestBinder binder;
     private ServiceConnection connection = new ServiceConnection() {
@@ -48,6 +52,7 @@ public class MyTestServiceActivity extends AppCompatActivity implements View.OnC
         button_unbind = (Button) findViewById(R.id.button_unbind);
         button_count = (Button) findViewById(R.id.button_add);
         button_show_count = (Button) findViewById(R.id.button_show_count);
+        button_call_notify = (Button) findViewById(R.id.button_notify);
 
         button_start_service.setOnClickListener(this);
         button_stop_service.setOnClickListener(this);
@@ -55,6 +60,9 @@ public class MyTestServiceActivity extends AppCompatActivity implements View.OnC
         button_unbind.setOnClickListener(this);
         button_count.setOnClickListener(this);
         button_show_count.setOnClickListener(this);
+        button_call_notify.setOnClickListener(this);
+
+        String test = getIntent().getStringExtra("test");
     }
 
     @Override
@@ -91,7 +99,25 @@ public class MyTestServiceActivity extends AppCompatActivity implements View.OnC
                     Toast.makeText(this, String.valueOf(binder.getCount()), Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.button_notify:
 
+                Intent notificationIntent = new Intent(this, ReceiveMassageActivity.class);
+                notificationIntent.putExtra("notifyId", 1);
+                notificationIntent.putExtra("test", "t");
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                        notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                Notification notification = new Notification.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("i am title")
+                        .setContentText("here is text")
+                        .setShowWhen(true)
+                        .setWhen(System.currentTimeMillis())
+                        .build();
+                notification.contentIntent = pendingIntent;
+                nm.notify(1, notification);
+//                startForeground(1, notification);
+                break;
             default:
                 break;
         }

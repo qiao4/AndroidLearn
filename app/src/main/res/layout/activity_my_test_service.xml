@@ -63,4 +63,16 @@
         android:layout_alignStart="@+id/button_add"
         android:layout_marginTop="18dp"
         android:id="@+id/button_show_count" />
+
+    <Button
+        android:text="Call Notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_unbind"
+        android:layout_alignStart="@+id/button_show_count"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="11dp"
+        android:id="@+id/button_notify"
+        android:textAllCaps="false"
+        android:onClick="onClick (MyTestServiceActivity)"/>
 </RelativeLayout>

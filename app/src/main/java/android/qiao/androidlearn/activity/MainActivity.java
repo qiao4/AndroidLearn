@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.button_my_test_servive:
                 Intent intent=new Intent(getApplicationContext(), MyTestServiceActivity.class);
+                intent.putExtra("test", "t");
                 startActivity(intent);
                 break;
             case R.id.button_asynctask:
