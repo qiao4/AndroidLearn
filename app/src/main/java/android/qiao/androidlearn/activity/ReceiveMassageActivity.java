@@ -1,6 +1,8 @@
 package android.qiao.androidlearn.activity;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,6 +65,23 @@ public class ReceiveMassageActivity extends AppCompatActivity {
                     msgList.setSelection(list.size());
 
                     myMsg.setText(newms.getMsg());
+
+                    //send notification
+                    Intent notificationIntent = new Intent(getApplicationContext(), ReceiveMassageActivity.class);
+                    notificationIntent.putExtra("notifyId", 1);
+                    notificationIntent.putExtra("msg", newms.getMsg());
+                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                            notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    Notification notification = new Notification.Builder(getApplicationContext())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle("receive message")
+                            .setContentText(newms.getMsg())
+                            .setShowWhen(true)
+                            .setWhen(System.currentTimeMillis())
+                            .build();
+                    notification.contentIntent = pendingIntent;
+                    nm.notify(1, notification);
                     break;
                 case -1:
                     String error = (String) msg.obj;
@@ -74,14 +94,6 @@ public class ReceiveMassageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive_massage);
-
-        Intent intentFromOther = getIntent();
-        String test = getIntent().getStringExtra("test");
-
-        if( (notifyId = intentFromOther.getIntExtra("notifyId", -1)) != -1) {
-            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            nm.cancel(notifyId);
-        }
 
         myMsg = (EditText) findViewById(R.id.edit_text_msg);
 
@@ -131,6 +143,18 @@ public class ReceiveMassageActivity extends AppCompatActivity {
 //        receiveT.start();
         receiveUDP = new Thread(new UDPReceiveThread());
         receiveUDP.start();
+
+        Intent intentFromOther = getIntent();
+
+        if( (notifyId = intentFromOther.getIntExtra("notifyId", -1)) != -1) {
+            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            nm.cancel(notifyId);
+            String message = intentFromOther.getStringExtra("msg");
+            list.add(new Msg(message, Msg.RECEIVE_SIGN));
+            adapter.notifyDataSetChanged();
+        }
+        msgList.requestFocus();
+        hideSoftKeyboard();
     }
 
     @Override
@@ -235,6 +259,14 @@ public class ReceiveMassageActivity extends AppCompatActivity {
                     e.getMessage();
                 }
             }
+        }
+    }
+
+    //from stackflowstack
+    public void hideSoftKeyboard() {
+        if(getCurrentFocus()!=null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
     }
 }
