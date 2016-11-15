@@ -35,5 +35,14 @@
         android:layout_alignStart="@+id/button_my_test_servive"
         android:id="@+id/button_asynctask"/>
 
+    <Button
+        android:text="Download File"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_asynctask"
+        android:layout_alignStart="@+id/button_asynctask"
+        android:id="@+id/button_download_manager"
+        android:textAllCaps="false"/>
+
 
 </RelativeLayout>

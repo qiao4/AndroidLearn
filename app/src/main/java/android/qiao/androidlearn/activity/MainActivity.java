@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button button_receive_message;
     Button button_my_test_service;
     Button button_async_task;
+    Button buttonDownloadFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         button_async_task = (Button) findViewById(R.id.button_asynctask);
         button_async_task.setOnClickListener(this);
+
+        buttonDownloadFile = (Button)findViewById(R.id.button_download_manager);
+        buttonDownloadFile.setOnClickListener(this);
     }
 
     @Override
@@ -43,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.button_asynctask:
                 new android.qiao.androidlearn.utils.MyTestAsyncTask(this).execute(0);
+                break;
+            case R.id.button_download_manager:
+                Intent intentDownload = new Intent(getApplicationContext(), DownloadManagerActivity.class);
+                startActivity(intentDownload);
                 break;
             default:
                 break;
