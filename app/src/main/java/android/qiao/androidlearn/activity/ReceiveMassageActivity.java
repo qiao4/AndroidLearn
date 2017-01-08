@@ -24,8 +24,11 @@ import android.widget.Toast;
 import java.io.BufferedInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,9 @@ import android.qiao.androidlearn.*;
 import android.qiao.androidlearn.utils.*;
 
 public class ReceiveMassageActivity extends AppCompatActivity {
+
+    DatagramSocket serverdS = null;
+    DatagramPacket message = null;
 
     private EditText anotherKey;
     private EditText anotherIp;
@@ -65,6 +71,9 @@ public class ReceiveMassageActivity extends AppCompatActivity {
                     msgList.setSelection(list.size());
 
                     myMsg.setText(newms.getMsg());
+
+                    //show ip
+                    anotherIp.setText(msg.getData().getString("ip"));
 
                     //send notification
                     Intent notificationIntent = new Intent(getApplicationContext(), ReceiveMassageActivity.class);
@@ -141,6 +150,15 @@ public class ReceiveMassageActivity extends AppCompatActivity {
 
 //        receiveT = new Thread(new ReceiveThread());
 //        receiveT.start();
+        try {
+//            Toast.makeText(ReceiveMassageActivity.this, "your ip is " + InetAddress.getLocalHost().getHostAddress()
+//                    , Toast.LENGTH_SHORT).show();
+        }
+        catch(Exception e) {
+            ;
+        }
+
+
         receiveUDP = new Thread(new UDPReceiveThread());
         receiveUDP.start();
 
@@ -163,11 +181,19 @@ public class ReceiveMassageActivity extends AppCompatActivity {
         if (receiveT != null) {
             receiveT.interrupt();
         }
+        if (receiveUDP != null) {
+            receiveUDP.interrupt();
+        }
         try {
             serverS.close();
+            if(serverdS != null) {
+                serverdS.disconnect();
+                serverdS.close();
+            }
         } catch (Exception e) {
             e.getMessage();
         }
+
     }
 
     //receive mesage by tcp socket
@@ -230,22 +256,36 @@ public class ReceiveMassageActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            DatagramSocket serverS = null;
-            DatagramPacket message = null;
 
             try {
+
+
                 message = new DatagramPacket(new byte[256], 256);
-                serverS = new DatagramSocket(REC_PORT);
-                Log.d("TAG", "run: start listening");
+//                serverdS = new DatagramSocket(null);
+//                serverdS.setReuseAddress(true);
+//                serverdS.bind(new InetSocketAddress(REC_PORT));
+
+                serverdS = new DatagramSocket(REC_PORT);
+
+                //show your ip
+//                InetAddress.getLocalHost().getHostAddress();
+//                Toast.makeText(ReceiveMassageActivity.this, "your ip is " + InetAddress.getLocalHost().getHostAddress()
+//                        , Toast.LENGTH_SHORT).show();
+
+                Log.w("TAG", "run: start listening");
             } catch (Exception e) {
+                Log.w("TAG", e.getMessage());
                 e.printStackTrace();
             }
             while (!Thread.currentThread().isInterrupted()) {
 
-                if(serverS == null) break;
+                if(serverdS == null) break;
+
+                Log.w("TAG", "servers not null");
+
                 try {
-                    serverS .receive(message);
-                    Log.d("TAG", "run: receive message form " + message.getAddress().getHostName()
+                    serverdS .receive(message);
+                    Log.w("TAG", "run: receive message form " + message.getAddress().getHostName()
                             + " : " + message.getAddress().getHostAddress());
                     byte[] data = new byte[message.getData()[0]];
                     System.arraycopy(message.getData(), 1, data, 0, data.length);
@@ -253,10 +293,13 @@ public class ReceiveMassageActivity extends AppCompatActivity {
                     Msg newMsg = new Msg(new String(data, "utf-8"), Msg.RECEIVE_SIGN);
                     Message m = new Message();
                     m.obj = newMsg;
+                    Bundle bundleIp = new Bundle();
+                    bundleIp.putString("ip", message.getAddress().getHostAddress());
+                    m.setData(bundleIp);
                     m.what = 1;
                     handler.sendMessage(m);
                 } catch (Exception e) {
-                    e.getMessage();
+                    Log.w("TAG", e.getMessage());
                 }
             }
         }

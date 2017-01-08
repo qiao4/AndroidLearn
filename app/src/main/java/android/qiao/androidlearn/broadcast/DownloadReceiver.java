@@ -19,5 +19,7 @@ public class DownloadReceiver extends BroadcastReceiver {
         } else if(intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
             Toast.makeText(context, "download completed", Toast.LENGTH_SHORT).show();
         }
+
+        
     }
 }
